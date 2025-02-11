@@ -30,8 +30,9 @@ public class PerlinNoise1D implements Sim {
 
         //perlin noise is outputed but it still needs to be spread out along the x axis effectivly turning them into points
         for(var i = 0; i < points.size(); i++){
-           double xpos = i;
-           double ypos = (height / 2) + points.get(i);
+            double xpos = i;
+           // subtract amplitude to reorient to center of Y axis
+           double ypos = (height / 2) + points.get(i) - 128;
            result.add(xpos);
            result.add(ypos);
         }

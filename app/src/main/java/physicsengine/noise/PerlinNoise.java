@@ -70,7 +70,19 @@ public class PerlinNoise {
                 double xInGrid = (double) x / pxPerGrid;
                 double yInGrid = (double) y / pxPerGrid;
                 
-                double val = this.calcPerlinNoise2D(xInGrid, yInGrid);
+                double val = 0.0;
+                double frequency = 1;
+                double amplitude = 1;
+                int octave = 8;
+
+                for (int o = 0; o < octave; o++) {
+                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency);
+
+                    amplitude *= 2;
+                    frequency *= 2;
+                }
+                
+                val = val / octave;
 
                 Color c = this.getGreyscaleColor(val);
                 perlinNoiseImage.getPixelWriter().setColor(x, y, c);
