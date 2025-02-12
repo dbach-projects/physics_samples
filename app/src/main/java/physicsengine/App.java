@@ -28,8 +28,6 @@ public class App extends Application {
     /* CONSTANTS */
     int WINDOW_WIDTH = 600;
     int WINDOW_HEIGHT = 600;
-    /* FORCES */
-    Force wind = new Wind(1f, 0f);
 
     Scene scene;
     Sim selectedSim;

@@ -1,6 +1,7 @@
 package physicsengine.simulation;
 
 import javafx.scene.Node;
+import physicsengine.Common;
 import physicsengine.Vector2D;
 import physicsengine.forces.Attraction;
 import physicsengine.forces.Force;
@@ -137,14 +138,10 @@ abstract class BaseBody {
         double newval = (value - minA) / (maxA - minA) * (maxB - minB) + minB;
 
         if (minB < maxB) {
-            return this.constrain(newval, minB, maxB);
+            return Common.constrain(newval, minB, maxB);
         } else {
-            return this.constrain(newval, maxB, minB);
+            return Common.constrain(newval, maxB, minB);
         }
-    }
-
-    private double constrain(double val, double min, double max) {
-        return Math.max(Math.min(val, max), min);
     }
 
     public boolean isDead() {
