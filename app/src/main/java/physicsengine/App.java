@@ -32,6 +32,7 @@ public class App extends Application {
     Scene scene;
     Sim selectedSim;
     Runnable renderer;
+    GameLoop gameLoop;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -62,7 +63,8 @@ public class App extends Application {
             selectedSim.stageSim();
             scene.setRoot(new Pane());
             scene.setRoot(borderPane);
-            GameLoop gameLoop = new FixedSteps(renderer, fpsReporter);
+            gameLoop.stop();
+            gameLoop = new FixedSteps(renderer, fpsReporter);
             gameLoop.start();
         });
 
@@ -77,7 +79,7 @@ public class App extends Application {
         selectedSim.stageSim();
         renderer = selectedSim.getRendererCallback();
 
-        GameLoop gameLoop = new FixedSteps(renderer, fpsReporter);
+        gameLoop = new FixedSteps(renderer, fpsReporter);
         gameLoop.start();
     }
 

@@ -76,12 +76,6 @@ public class FlowFieldSim implements Sim {
     @Override
     public Runnable getRendererCallback() {
         return () -> {
-            // //bodies to move through flow field
-            // Shape circle = new CircleWrapper((float)Math.random() * 600, (float) Math.random() * 600, 10, Color.GREY);
-            // Body solidCircle = new SolidBody(1, circle);
-            // bodyItems.add(solidCircle);
-            // this.pane.getChildren().add(solidCircle.getNode());
-
             for (Body body : this.bodyItems) {
                 Vector2D desired = this.ff.lookup(body.getPosition(), this.gridResolution);
 

@@ -61,7 +61,6 @@ public class ArriveAtTargetSim implements Sim {
     @Override
     public Runnable getRendererCallback() {
         return () -> {
-
             boolean hasArrived = this.vehicle.arrive(this.target);
             if (hasArrived) {
                ((CircleWrapper) this.target.getShape()).setFill((Color) this.arriveColor);
