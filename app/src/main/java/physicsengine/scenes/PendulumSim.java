@@ -45,7 +45,6 @@ public class PendulumSim implements Sim {
 
         //callback functions
         solidBob.setOnMouseDragged((event) -> {
-            System.out.println("isDragged: TRUE");
             solidBob.setIsDragged(true);
             float x1 = (float) event.getSceneX();
             float y1 = (float) event.getSceneY();
@@ -53,7 +52,6 @@ public class PendulumSim implements Sim {
             this.mousePos.setY(y1);
         });
         solidBob.setOnMouseReleased((event) -> {
-            System.out.println("isDragged: FALSE");
             solidBob.setIsDragged(false);
         });
 

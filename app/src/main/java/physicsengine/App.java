@@ -15,6 +15,7 @@ import physicsengine.forces.*;
 import physicsengine.gameloop.FixedSteps;
 import physicsengine.gameloop.GameLoop;
 import physicsengine.scenes.ArriveAtTargetSim;
+import physicsengine.scenes.FlowFieldSim;
 import physicsengine.scenes.PerlinNoise1D;
 import physicsengine.scenes.PerlinNoise2D;
 import physicsengine.scenes.GravitySim;
@@ -43,7 +44,7 @@ public class App extends Application {
         ObservableList<String> scenes = FXCollections.observableArrayList();
 
         /* CREATE SCENES */
-        scenes.addAll("PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
+        scenes.addAll("FlowField","PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
         sceneSelector.setItems(scenes);
         sceneSelector.getSelectionModel().select(scenes.get(0));
 
@@ -87,6 +88,10 @@ public class App extends Application {
         Sim selectedSim;
 
         switch (selectedScene) {
+            case "FlowField":
+                selectedSim = new FlowFieldSim(WINDOW_WIDTH, WINDOW_HEIGHT);
+                break;
+
             case "PerlinNoise2D":
                 selectedSim = new PerlinNoise2D(WINDOW_WIDTH, WINDOW_HEIGHT);
                 break;

@@ -136,6 +136,10 @@ public class Vector2D {
         return v3;
     }
 
+    public static Vector2D fromAngle(float angle, int length) {
+        return new Vector2D(length * Math.cos(angle), length * Math.sin(angle));
+    }
+
     @Override
     public String toString() {
         return "X: " + x + " Y: " + y;

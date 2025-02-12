@@ -18,6 +18,8 @@ public interface Body {
     float getMass();
 
     public void applyForce(Force force);
+    
+    public void applyForce(Vector2D force);
 
     void followMouse(Vector2D mousePosition);
 
@@ -72,7 +74,6 @@ abstract class BaseBody {
         shape.getNode().setLayoutY(this.getPosition().getY());
         shape.getNode().setRotate(this.getAngleInDegrees());
     }
-
 
     public void applyForce(Force force) {
         if (this.applyForces) {

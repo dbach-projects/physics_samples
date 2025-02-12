@@ -46,10 +46,12 @@ public class PerlinNoise {
     /*
      * PERLIN 2D
      * https://github.com/lwilbur/Perlin_2D/blob/main/Perlin2D.java
+     * https://thebookofshaders.com
+     * https://adrianb.io/2014/08/09/perlinnoise.html
      */
 
     /**
-     * PerlinNoise2D returns a WritableImage that has had Perlin Noise drawn to it.
+     * PerlinNoise2D returns a List of List<Double> of Perlin Noise values in the range of [0,1].
      * @param imgWidth The width of the WritableImage and the drawn Perlin Noise.
      * @param imgHeight The height of the WritableImage and the drawn Perlin Noise.
      * @param seed The seed used to shuffle the permutation array,
@@ -58,7 +60,52 @@ public class PerlinNoise {
      * Perlin Noise calculation.
      * @return A WritableImage containing Perlin Noise
      */
-    public WritableImage perlinNoise2D(int imgWidth, int imgHeight, long seed, int pxPerGrid) {
+    public List<List<Double>> perlinNoise2D(int imgWidth, int imgHeight, long seed, int pxPerGrid) {
+        PerlinNoise.setSeed(seed);
+        List<List<Double>> noise = new ArrayList<List<Double>>();
+
+        for (int x = 0; x < imgWidth; x++) {
+            List<Double> yNoise = new ArrayList<Double>();
+            for (int y = 0; y < imgHeight; y++) {
+
+                // Calculate where the current point falls in the grid of
+                // PX_PER_GRID-wide squares
+                double xInGrid = (double) x / pxPerGrid;
+                double yInGrid = (double) y / pxPerGrid;
+
+                double val = 0.0;
+                double frequency = 1;
+                double amplitude = 1;
+                int octave = 8;
+
+                for (int o = 0; o < octave; o++) {
+                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency);
+
+                    amplitude *= 2;
+                    frequency *= 2;
+                }
+
+                val = val / octave;
+
+                yNoise.add(val);
+            }
+            noise.add(yNoise);
+        }
+        
+        return noise;
+    }
+
+    /**
+     * PerlinNoise2DWritableImage returns a WritableImage that has had Perlin Noise drawn to it.
+     * @param imgWidth The width of the WritableImage and the drawn Perlin Noise.
+     * @param imgHeight The height of the WritableImage and the drawn Perlin Noise.
+     * @param seed The seed used to shuffle the permutation array,
+     * which is used like a psudorandom number generator in the range of [0, 255]
+     * @param pxPerGrid The size of the squares used to divide the imaga area up for the
+     * Perlin Noise calculation.
+     * @return A WritableImage containing Perlin Noise
+     */
+    public WritableImage perlinNoise2DWritableImage(int imgWidth, int imgHeight, long seed, int pxPerGrid) {
         PerlinNoise.setSeed(seed);
         WritableImage perlinNoiseImage = new WritableImage(imgWidth, imgHeight);
 
@@ -98,7 +145,7 @@ public class PerlinNoise {
      * @param y y-coordinate to generate noise value for
      * @return double value in range [0.0, 1.0] for that point
      */
-    private double calcPerlinNoise2D(double x, double y) {
+    public double calcPerlinNoise2D(double x, double y) {
         // CALCULATE DOT PRODUCT BETWEEN GRADIANT & DISTANCE VECTORS
 
         // get unit square

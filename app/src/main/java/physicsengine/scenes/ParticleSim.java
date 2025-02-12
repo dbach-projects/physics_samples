@@ -46,7 +46,6 @@ public class ParticleSim implements Sim {
 
         // callback function
         solidRepeller.setOnMouseDragged((event) -> {
-            System.out.println("isDragged: TRUE");
             solidRepeller.setIsDragged(true);
             float x1 = (float) event.getSceneX();
             float y1 = (float) event.getSceneY();
@@ -54,7 +53,6 @@ public class ParticleSim implements Sim {
             this.mousePos.setY(y1);
         });
         solidRepeller.setOnMouseReleased((event) -> {
-            System.out.println("isDragged: FALSE");
             solidRepeller.setIsDragged(false);
         });
     }
