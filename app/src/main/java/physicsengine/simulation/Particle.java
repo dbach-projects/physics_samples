@@ -3,20 +3,19 @@ package physicsengine.simulation;
 import javafx.scene.Node;
 import physicsengine.Vector2D;
 import physicsengine.forces.Force;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 
 public class Particle extends BaseBody implements Body{
-    private Shape shape;
-    private int mass;
+    private WrapperShape shape;
 
-    public Particle(float posX, float posY, Shape shape) {
+    public Particle(float posX, float posY, float maxspeed, float minspeed, WrapperShape shape) {
         super.setLifespan(200);
-        super.setMaxSpeed(1);
+        super.setMaxspeed(maxspeed);
+        super.setMinspeed(minspeed);
         super.setPosition(new Vector2D(posX, posY));
         super.setVelocity(new Vector2D((float) ((Math.random() * (1 - -1)) + -1) , 0));
         super.setAcceleration(new Vector2D(0, 0));
-
-        this.mass = 1;
+        super.setMass(1);
 
         this.shape = shape;
     }
@@ -36,8 +35,17 @@ public class Particle extends BaseBody implements Body{
 
     public void applyForce(Force force) {
         Vector2D f = force.getForce().copy();
-        f.div(this.mass);
+        f.div(super.getMass());
         super.getAcceleration().add(f);
+    }
+
+    public WrapperShape getShape() {
+        return this.shape;
+    }
+
+    @Override
+    public Node getNode() {
+        return shape.getNode();
     }
 
     @Override
@@ -56,16 +64,6 @@ public class Particle extends BaseBody implements Body{
     public boolean contains(Body body) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'contains'");
-    }
-    
-    @Override
-    public Node getNode() {
-        return shape.getNode();
-    }
-
-    @Override
-    public Shape getShape() {
-        return this.shape;
     }
 
 }

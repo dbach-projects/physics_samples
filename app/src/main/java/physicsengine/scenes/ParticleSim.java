@@ -16,7 +16,7 @@ import physicsengine.forces.Friction;
 import physicsengine.forces.Gravity;
 import physicsengine.forces.Oscillation;
 import physicsengine.shapes.CircleWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 import physicsengine.simulation.Body;
 import physicsengine.simulation.Emitter;
 import physicsengine.simulation.SolidBody;
@@ -39,8 +39,8 @@ public class ParticleSim implements Sim {
         Paint color = Color.rgb(200, 153, 255, .5);
         this.bodies = new ArrayList<Body>();
         this.emitters = new ArrayList<Emitter>();
-        Shape circle = new CircleWrapper(0, 0, 20, color);
-        SolidBody solidRepeller = new SolidBody(0, 0, 10, circle);
+        WrapperShape circle = new CircleWrapper(0, 0, 20, color);
+        SolidBody solidRepeller = new SolidBody(0, 0,3,0, 10, circle);
         this.repeller = (Body) solidRepeller;
         this.oscillation = new Oscillation(new Vector2D(300, 200));
 

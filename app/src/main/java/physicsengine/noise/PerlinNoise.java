@@ -60,7 +60,7 @@ public class PerlinNoise {
      * Perlin Noise calculation.
      * @return A WritableImage containing Perlin Noise
      */
-    public List<List<Double>> perlinNoise2D(int imgWidth, int imgHeight, long seed, int pxPerGrid) {
+    public List<List<Double>> perlinNoise2D(int imgWidth, int imgHeight, long seed, int pxPerGrid, double persistence) {
         PerlinNoise.setSeed(seed);
         List<List<Double>> noise = new ArrayList<List<Double>>();
 
@@ -76,16 +76,19 @@ public class PerlinNoise {
                 double val = 0.0;
                 double frequency = 1;
                 double amplitude = 1;
+                double maxValue = 0;
                 int octave = 8;
 
                 for (int o = 0; o < octave; o++) {
-                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency);
+                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency) * amplitude;
 
-                    amplitude *= 2;
+                    maxValue += amplitude;
+
+                    amplitude *= persistence;
                     frequency *= 2;
                 }
 
-                val = val / octave;
+                val = val / maxValue;
 
                 yNoise.add(val);
             }
@@ -105,37 +108,19 @@ public class PerlinNoise {
      * Perlin Noise calculation.
      * @return A WritableImage containing Perlin Noise
      */
-    public WritableImage perlinNoise2DWritableImage(int imgWidth, int imgHeight, long seed, int pxPerGrid) {
+    public WritableImage perlinNoise2DWritableImage(int imgWidth, int imgHeight, long seed, int pxPerGrid,  double persistence) {
         PerlinNoise.setSeed(seed);
         WritableImage perlinNoiseImage = new WritableImage(imgWidth, imgHeight);
 
+        List<List<Double>> noise = this.perlinNoise2D(imgWidth, imgHeight, seed, pxPerGrid, persistence);
+
         for (int x = 0; x < imgWidth; x++) {
             for (int y = 0; y < imgHeight; y++) {
-
-                // Calculate where the current point falls in the grid of
-                // PX_PER_GRID-wide squares
-                double xInGrid = (double) x / pxPerGrid;
-                double yInGrid = (double) y / pxPerGrid;
-                
-                double val = 0.0;
-                double frequency = 1;
-                double amplitude = 1;
-                int octave = 8;
-
-                for (int o = 0; o < octave; o++) {
-                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency);
-
-                    amplitude *= 2;
-                    frequency *= 2;
-                }
-                
-                val = val / octave;
-
-                Color c = this.getGreyscaleColor(val);
+                Color c = this.getGreyscaleColor(noise.get(x).get(y));
                 perlinNoiseImage.getPixelWriter().setColor(x, y, c);
             }
         }
-        
+
         return perlinNoiseImage;
     }
 
@@ -146,8 +131,6 @@ public class PerlinNoise {
      * @return double value in range [0.0, 1.0] for that point
      */
     public double calcPerlinNoise2D(double x, double y) {
-        // CALCULATE DOT PRODUCT BETWEEN GRADIANT & DISTANCE VECTORS
-
         // get unit square
         Vector2D[] unitSquare = getSquareCoords(x, y);
         double[] dotProds = new double[4];  // stores each gradiant • distance val
@@ -157,7 +140,7 @@ public class PerlinNoise {
             Vector2D corner = unitSquare[i];
 
             // Calculate distance vector and grad vector based on given point
-            Vector2D distVec = new Vector2D(x - corner.getX(), y - corner.getY());
+            Vector2D distVec = new Vector2D((float)(x - corner.getX()), (float)(y - corner.getY()));
             Vector2D gradVec = selectGradVector((int) corner.getX(), (int) corner.getY());
 
             dotProds[i] = Vector2D.dot(gradVec, distVec);

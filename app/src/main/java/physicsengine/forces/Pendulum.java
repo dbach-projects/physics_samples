@@ -34,7 +34,7 @@ public class Pendulum implements Force {
 
         this.pivot = pivot.getPosition();
         //Polar-to-Cartesian conversion
-        this.bob.set(this.armLength * Math.sin(this.angle), this.armLength * Math.cos(this.angle));
+        this.bob.set((float)(this.armLength * Math.sin(this.angle)), (float)(this.armLength * Math.cos(this.angle)));
         this.bob.add(this.pivot);
 
         bob.setPosition(this.bob);

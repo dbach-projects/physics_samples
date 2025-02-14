@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.PolylineWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 import physicsengine.simulation.Body;
 import physicsengine.simulation.SolidBody;
 import physicsengine.Vector2D;
@@ -34,13 +34,13 @@ public class PendulumSim implements Sim {
 
         this.color = Color.GREY;
         this.bodyItems = new ArrayList<Body>();
-        Shape circle1 = new CircleWrapper(0, 0, 15, color);
-        Shape circle2 = new CircleWrapper(0, 0, 30, color);
-        this.anchor = new SolidBody(300, 100, 10, circle1, false);
-        SolidBody solidBob = new SolidBody(300, 375, 10, circle2);
+        WrapperShape circle1 = new CircleWrapper(0, 0, 15, color);
+        WrapperShape circle2 = new CircleWrapper(0, 0, 30, color);
+        this.anchor = new SolidBody(300, 100, 3,0,10, circle1, false);
+        SolidBody solidBob = new SolidBody(300, 375, 3,0,10, circle2);
         this.bob = (Body) solidBob;
-        Shape line = new PolylineWrapper(300, 100, 300, 475, color);
-        this.line = new SolidBody(0, 0, 0, line, false);
+        WrapperShape line = new PolylineWrapper(300, 100, 300, 475, color);
+        this.line = new SolidBody(0, 0, 3,0,0, line, false);
         this.pendulum = new Pendulum(150);
 
         //callback functions
@@ -75,8 +75,8 @@ public class PendulumSim implements Sim {
         return () -> {
             //link end of polyline to the bob
             Vector2D pos = this.bob.getPosition();
-            PolylineWrapper line = (PolylineWrapper) this.line.getShape();
-            line.updateEndPos(pos.getX(), pos.getY());
+            WrapperShape plws = ((SolidBody) this.line).getWrappedShape();
+            ((PolylineWrapper)plws).updateEndPos(pos.getX(), pos.getY());
 
             //apply the pendulum force
             ((Pendulum) this.pendulum).connect(this.bob, this.anchor, this.mousePos);

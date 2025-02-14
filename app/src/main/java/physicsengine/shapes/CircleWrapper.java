@@ -6,15 +6,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 
-public class CircleWrapper extends BaseShape implements Shape {
+public class CircleWrapper extends BaseShape implements WrapperShape {
     private Group group;
     private Circle circle;
     private Line line;
     
     public CircleWrapper(double x, double y, double radius, Paint color) {
-        super.setColor(color);
         this.circle = new Circle(x, y, radius, color);
         this.circle.setStroke(Color.BLACK);
         this.circle.setStrokeWidth(radius / 10);
@@ -27,19 +27,21 @@ public class CircleWrapper extends BaseShape implements Shape {
         return this.circle.getRadius();
     }
 
-    public Group getShape() {
+    public void setFill(Color color) {
+        this.circle.setFill(color);
+    }
+
+    public Group getGroup() {
         return this.group;
     }
 
-    public void setFill(Color color) {
-        circle.setFill(color);
-    }
-
-    public CircleWrapper duplicate() {
-        return new CircleWrapper(this.circle.getCenterX(), this.circle.getCenterY(), this.circle.getRadius(), super.getColor());
-    }
-
+    @Override
     public Node getNode() {
         return this.group;
+    }
+
+    @Override
+    public Shape getShape() {
+        return this.circle;
     }
 }

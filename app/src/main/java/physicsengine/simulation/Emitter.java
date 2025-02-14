@@ -8,9 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import physicsengine.Vector2D;
 import physicsengine.forces.Force;
-import physicsengine.shapes.Shape;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.RectangleWrapper;
+import physicsengine.shapes.WrapperShape;
 
 public class Emitter {
     Vector2D origin;
@@ -26,12 +26,12 @@ public class Emitter {
         double r = Math.random();
 
         if (r < 0.5) {
-            Shape circle = new CircleWrapper(0, 0, 10, color);
-            p = new Particle(this.origin.getX(), this.origin.getY(), circle);
+            WrapperShape circle = new CircleWrapper(0, 0, 10, color);
+            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, circle);
             this.particles.add(p);
         } else {
-            Shape rectangle = new RectangleWrapper(15, 15, color);
-            p = new Particle(this.origin.getX(), this.origin.getY(), rectangle);
+            WrapperShape rectangle = new RectangleWrapper(15, 15, color);
+            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, rectangle);
             this.particles.add(p);
         }
 

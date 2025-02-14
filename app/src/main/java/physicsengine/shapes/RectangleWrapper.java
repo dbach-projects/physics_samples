@@ -4,14 +4,13 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
-public class RectangleWrapper extends BaseShape implements Shape {
+public class RectangleWrapper extends BaseShape implements WrapperShape {
     private Rectangle rectangle;
-    private Paint color;
 
     
     public RectangleWrapper(double width, double height, Paint color) {
-        this.color = color;
         this.rectangle = new Rectangle(width, height, color);
     }
 
@@ -19,11 +18,13 @@ public class RectangleWrapper extends BaseShape implements Shape {
         this.rectangle.setFill(color);
     }
 
-    public RectangleWrapper duplicate() {
-        return new RectangleWrapper(this.rectangle.getWidth(), this.rectangle.getHeight(), this.color);
+    @Override
+    public Node getNode() {
+        return this.rectangle;
     }
 
-    public Node getNode() {
+    @Override
+    public Shape getShape() {
         return this.rectangle;
     }
 }

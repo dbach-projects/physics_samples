@@ -11,7 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import physicsengine.shapes.CircleWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 import physicsengine.simulation.Body;
 import physicsengine.simulation.SolidBody;
 import physicsengine.forces.*;
@@ -19,31 +19,28 @@ import physicsengine.forces.*;
 public class GravitySim implements Sim {
     private int NUMBER_OF_BODIES = 4;
     private Pane pane;
-    private List<Body> bodyItems;
-    private Shape solidBodyCircle;
+    private List<Body> bodyItems = new ArrayList<Body>();
     private Paint color;
 
     public GravitySim(int width, int height) {
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
-
         this.color = Color.rgb(0, 155, 255, 0.4);
-        this.bodyItems = new ArrayList<Body>();
-        this.solidBodyCircle = new CircleWrapper(0, 0, 10, color);
     }
 
     @Override
     public void stageSim() {
-        // float paneWidth = (float) this.pane.getWidth();
+        //TODO: Race condition here? (float) this.pane.getWidth() doesnt seem to work
+        System.out.println("Pane Width: " + this.pane.getWidth());
         float paneWidth = 600;
-        System.out.println("Pane Width: " + paneWidth);
         
         for (int i = 0; i < NUMBER_OF_BODIES; i++) {
             int x = (int) (paneWidth / NUMBER_OF_BODIES) * i + 75;
-            int y = 100;
+            int y = 150;
             float mass = (float) Math.random();
-            bodyItems.add(new SolidBody(x, y, mass, solidBodyCircle));
+            WrapperShape solidBodyCircle = new CircleWrapper(0, 0, (mass * 20) + 10, color);
+            bodyItems.add(new SolidBody(x, y,3,0, mass, solidBodyCircle));
         }
 
         for (Body body : bodyItems) {
@@ -54,8 +51,6 @@ public class GravitySim implements Sim {
 
     @Override
     public Runnable getRendererCallback() {
-        // float paneWidth = (float) this.pane.getWidth();
-        // float paneHeight = (float) this.pane.getHeight();
         float paneWidth = 600;
         float paneHeight = 575;
 

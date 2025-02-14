@@ -32,7 +32,7 @@ public class PerlinNoise2D implements Sim {
 
         long startTime = System.nanoTime();
         PerlinNoise pn = new PerlinNoise();
-        WritableImage img = pn.perlinNoise2DWritableImage(width, height, 50932, 50);
+        WritableImage img = pn.perlinNoise2DWritableImage(width, height, 50932, 50, 1.2);
         long endTime = System.nanoTime();
         long executionTime = endTime - startTime;
         System.out.println("Method execution time: " + executionTime + "ns");

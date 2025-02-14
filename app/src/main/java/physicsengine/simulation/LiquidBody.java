@@ -4,19 +4,17 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import physicsengine.Vector2D;
 import physicsengine.shapes.RectangleWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 
 public class LiquidBody extends BaseBody implements Body {
     private int x, y, w, h;
-    private double c;
-    private Shape shape;
+    private WrapperShape shape;
     
-    public LiquidBody(int x, int y, int w, int h, double c) {
+    public LiquidBody(int x, int y, int w, int h) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        this.c = c;
 
         this.shape = new RectangleWrapper(w, h, Color.rgb(0, 153, 255, 0.39));
         this.shape.getNode().setLayoutX(this.x);
@@ -58,8 +56,7 @@ public class LiquidBody extends BaseBody implements Body {
         return this.shape.getNode();
     }
 
-    @Override
-    public Shape getShape() {
+    public WrapperShape getShape() {
         return this.shape;
     }
 }

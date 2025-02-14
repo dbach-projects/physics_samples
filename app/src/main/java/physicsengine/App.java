@@ -11,10 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import physicsengine.forces.*;
 import physicsengine.gameloop.FixedSteps;
 import physicsengine.gameloop.GameLoop;
 import physicsengine.scenes.ArriveAtTargetSim;
+import physicsengine.scenes.FlockingSim;
 import physicsengine.scenes.FlowFieldSim;
 import physicsengine.scenes.PerlinNoise1D;
 import physicsengine.scenes.PerlinNoise2D;
@@ -43,7 +43,7 @@ public class App extends Application {
         ObservableList<String> scenes = FXCollections.observableArrayList();
 
         /* CREATE SCENES */
-        scenes.addAll("FlowField","PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
+        scenes.addAll("Flocking", "FlowField","PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
         sceneSelector.setItems(scenes);
         sceneSelector.getSelectionModel().select(scenes.get(0));
 
@@ -58,12 +58,12 @@ public class App extends Application {
  
         /* CHOICEBOX ACTION */
         sceneSelector.setOnAction(event -> {
+            gameLoop.stop();
             selectedSim = setSim(borderPane, sceneSelector);
             renderer = selectedSim.getRendererCallback();
-            selectedSim.stageSim();
             scene.setRoot(new Pane());
             scene.setRoot(borderPane);
-            gameLoop.stop();
+            selectedSim.stageSim();
             gameLoop = new FixedSteps(renderer, fpsReporter);
             gameLoop.start();
         });
@@ -88,6 +88,10 @@ public class App extends Application {
         Sim selectedSim;
 
         switch (selectedScene) {
+            case "Flocking":
+                selectedSim = new FlockingSim(WINDOW_WIDTH, WINDOW_HEIGHT);
+                break;
+
             case "FlowField":
                 selectedSim = new FlowFieldSim(WINDOW_WIDTH, WINDOW_HEIGHT);
                 break;

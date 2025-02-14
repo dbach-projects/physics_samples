@@ -2,31 +2,19 @@ package physicsengine.simulation;
 
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Shape;
 import javafx.event.EventHandler;
 import physicsengine.Vector2D;
 import physicsengine.shapes.CircleWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 
 public class SolidBody extends BaseBody implements Body {
-    private Shape shape;
+    private WrapperShape shape;
 
-    public SolidBody(float mass, Shape shape) {
+    public SolidBody(float posX, float posY, float maxspeed, float minspeed, float mass, WrapperShape shape) {
         super.setMass(mass);
-        super.setMaxSpeed(5);
-        super.setPosition(new Vector2D(0,0));
-        super.setVelocity(new Vector2D(0, 0));
-        super.setAcceleration(new Vector2D(0, 0));
-
-        super.setAngleInDegrees(0);
-        super.setAngleVelocity(0);
-        super.setAngleAcceleration(0);
-
-        this.shape = shape.duplicate();
-    }
-
-    public SolidBody(float posX, float posY, float mass, Shape shape) {
-        super.setMass(mass);
-        super.setMaxSpeed(5);
+        super.setMaxspeed(maxspeed);
+        super.setMinspeed(minspeed);
         super.setPosition(new Vector2D(posX, posY));
         super.setVelocity(new Vector2D(0, 0));
         super.setAcceleration(new Vector2D(0, 0));
@@ -35,12 +23,13 @@ public class SolidBody extends BaseBody implements Body {
         super.setAngleVelocity(0);
         super.setAngleAcceleration(0);
 
-        this.shape = shape.duplicate();
+        this.shape = shape;
     }
 
-    public SolidBody(float posX, float posY, float mass, Shape shape, boolean applyForces) {
+    public SolidBody(float posX, float posY,float maxspeed, float minspeed, float mass,  WrapperShape shape, boolean applyForces) {
         super.setMass(mass);
-        super.setMaxSpeed(5);
+        super.setMaxspeed(maxspeed);
+        super.setMinspeed(minspeed);
         super.setApplyForces(applyForces);
         super.setPosition(new Vector2D(posX, posY));
         super.setVelocity(new Vector2D(0, 0));
@@ -50,13 +39,17 @@ public class SolidBody extends BaseBody implements Body {
         super.setAngleVelocity(0);
         super.setAngleAcceleration(0);
 
-        this.shape = shape.duplicate();
+        this.shape = shape;
     }
 
 
     public void run() {
         this.update();
         this.draw(this.shape);
+    }
+
+    public void setOnMouseClicked(EventHandler<? super MouseEvent> callback) {
+        this.shape.getNode().setOnMouseClicked(callback);
     }
 
     public void setOnMouseDragged(EventHandler<? super MouseEvent> callback) {
@@ -113,9 +106,19 @@ public class SolidBody extends BaseBody implements Body {
         return this.shape.getNode();
     }
 
-    @Override
     public Shape getShape() {
+        return this.shape.getShape();
+    }
+
+    public WrapperShape getWrappedShape() {
         return this.shape;
+    }
+
+    @Override
+    public String toString() {
+        return "ShapeId: " + this.shape.toString() +
+                " Position: " + super.getPosition().toString() +
+                " Velocity: " + super.getVelocity().toString();
     }
 
 }

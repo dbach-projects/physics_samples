@@ -25,8 +25,7 @@ public class Spring implements Force {
         float currentLength = force.mag();
         float x = currentLength - this.restLength;
         force.setMag(-1 * this.constant * x);
-        Force f = new Spring(force);
-        body.applyForce(f);
+        body.applyForce(force);
     }
 
     @Override

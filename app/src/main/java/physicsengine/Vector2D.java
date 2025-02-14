@@ -11,11 +11,6 @@ public class Vector2D {
         this.x = x;
         this.y = y;
     }
-    
-    public Vector2D(double x, double y) {
-        this.x = (float) x;
-        this.y = (float) y; 
-    }
 
     public float getX() {
         return x;
@@ -36,11 +31,6 @@ public class Vector2D {
     public void set(float x, float y) {
         this.x = x;
         this.y = y;
-    }
-
-    public void set(double x, double y) {
-        this.x = (float) x;
-        this.y = (float) y;
     }
     
     public void add(Vector2D v) {
@@ -78,7 +68,25 @@ public class Vector2D {
         return a.getX() * this.x + a.getY() * this.y;
     }
 
-    public void limit(float max) {
+    public void maxLimit(float max) {
+        if (this.mag() > max) {
+            this.normalize();
+            this.mult(max);
+        }
+    }
+
+    public void minLimit(float min) {
+        if (this.mag() < min) {
+            this.normalize();
+            this.mult(min);
+        }
+    }
+
+    public void rangeLimit(float max, float min) {
+        if (this.mag() < min) {
+            this.normalize();
+            this.mult(min);
+        }
         if (this.mag() > max) {
             this.normalize();
             this.mult(max);
@@ -112,8 +120,8 @@ public class Vector2D {
         return (float) a.getX() * b.getX() + a.getY() * b.getY();
     }
     
-    public static double euclideanDistance(Vector2D a, Vector2D b) {
-        return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2));
+    public static float euclideanDistance(Vector2D a, Vector2D b) {
+        return (float) Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2));
     }
 
     public static Vector2D add(Vector2D v1, Vector2D v2) {
@@ -137,7 +145,7 @@ public class Vector2D {
     }
 
     public static Vector2D fromAngle(float angle, int length) {
-        return new Vector2D(length * Math.cos(angle), length * Math.sin(angle));
+        return new Vector2D((float)(length * Math.cos(angle)), (float)(length * Math.sin(angle)));
     }
 
     @Override

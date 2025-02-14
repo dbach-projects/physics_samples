@@ -3,14 +3,10 @@ package physicsengine.simulation;
 import javafx.scene.Node;
 import physicsengine.Common;
 import physicsengine.Vector2D;
-import physicsengine.forces.Attraction;
 import physicsengine.forces.Force;
-import physicsengine.forces.Repulsion;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 
 public interface Body {
-
-    Shape getShape();
 
     Node getNode();
 
@@ -21,8 +17,6 @@ public interface Body {
     public void applyForce(Force force);
     
     public void applyForce(Vector2D force);
-
-    void followMouse(Vector2D mousePosition);
 
     void run();
 
@@ -40,25 +34,33 @@ public interface Body {
 
     boolean isDead();
 
-    void setPosition(Vector2D bob);
+    void setPosition(Vector2D v);
+
+    void setVelocity(Vector2D v);
+
+    float getMaxspeed();
+
+    float getMinspeed();
+
+    float getMaxforce();
 }
 
 
 abstract class BaseBody {
     private Vector2D position, velocity, acceleration;
     private float angleInDegrees, angleVelocity, angleAcceleration;
-    private int maxSpeed;
-    private float maxforce = 2f;
+    private float maxspeed, minspeed;
+    private float maxforce = 0.5f;
     private int lifespan = -1;
     private float mass;
     private boolean applyForces = true;
-    private float damping = 0.98f;
+    private float damping = 1f;
     private boolean isDragged = false;
 
     public void update() {
         this.velocity.add(acceleration);
         this.velocity.mult(this.damping);
-        this.velocity.limit(this.maxSpeed);
+        this.velocity.rangeLimit(maxspeed, minspeed);
         this.position.add(this.velocity);
 
         this.angleInDegrees = (float) Math.toDegrees(this.velocity.heading());
@@ -70,7 +72,7 @@ abstract class BaseBody {
         this.acceleration.mult(0);
     }
 
-    public void draw(Shape shape) {
+    public void draw(WrapperShape shape) {
         shape.getNode().setLayoutX(this.getPosition().getX());
         shape.getNode().setLayoutY(this.getPosition().getY());
         shape.getNode().setRotate(this.getAngleInDegrees());
@@ -98,8 +100,7 @@ abstract class BaseBody {
         float distance = constrain(force.mag(), 5, 25);
         float strength = (G * (this.mass * body.getMass())) / (distance * distance);
         force.setMag(strength);
-        Force attract = new Attraction(force);
-        body.applyForce(attract);
+        body.applyForce(force);
     }
 
     public void repell(Body body, int power) {
@@ -107,49 +108,36 @@ abstract class BaseBody {
         float distance = force.mag();
         float strength = -1 * power / (distance * distance);
         force.setMag(strength);
-        Force repulse = new Repulsion(force);
-        body.applyForce(repulse);
+        body.applyForce(force);
     }
 
-    public boolean arrive(Body target) {
-        Vector2D desired = Vector2D.sub(target.getPosition(), this.getPosition());
+    public void seek(Vector2D position) {
+        Vector2D desired = Vector2D.sub(position, this.getPosition());
         float d = desired.mag();
 
         if (d < 100) {
-            float m = (float) this.norm(d, 0, 100, 0, this.maxSpeed);
+            float m = (float) Common.normalize(d, 0, 100, 0, this.maxspeed);
             desired.setMag(m);
 
         } else {
-            desired.setMag(this.maxSpeed);
+            desired.setMag(this.maxspeed);
         }
 
         Vector2D steer = Vector2D.sub(desired, this.getVelocity());
-        steer.limit(this.maxforce);
+        steer.maxLimit(this.maxforce);
         this.applyForce(steer);
-        //TODO: change this so it isnt limited to circle radius
-        if (Vector2D.euclideanDistance(target.getPosition(), this.getPosition()) < 10) {
+    }
+
+    public boolean hasArrived(Vector2D position, int range) {
+        if (Vector2D.euclideanDistance(position, this.getPosition()) < range) {
             return true;
         } else {
             return false;
         }
     }
-    
-    private double norm(double value, double minA, double maxA, double minB, double maxB) {
-        double newval = (value - minA) / (maxA - minA) * (maxB - minB) + minB;
-
-        if (minB < maxB) {
-            return Common.constrain(newval, minB, maxB);
-        } else {
-            return Common.constrain(newval, maxB, minB);
-        }
-    }
 
     public boolean isDead() {
         return (this.lifespan < 0);
-    }
-
-    public void followMouse(Vector2D mousePos) {
-        this.setPosition(mousePos);
     }
 
     public boolean getApplyForces() {
@@ -180,16 +168,16 @@ abstract class BaseBody {
         return this.velocity;
     }
 
-    public void setVelocity(Vector2D velocity) {
-        this.velocity = velocity;
+    public void setVelocity(Vector2D v) {
+        this.velocity = v;
     }
 
     public Vector2D getPosition() {
         return this.position;
     }
 
-    public void setPosition(Vector2D position) {
-        this.position = position;
+    public void setPosition(Vector2D v) {
+        this.position = v;
     }
 
     public float getMass() {
@@ -200,12 +188,28 @@ abstract class BaseBody {
         this.mass = mass;
     }
 
-    public int getMaxSpeed() {
-        return maxSpeed;
+    public float getMaxspeed() {
+        return maxspeed;
     }
 
-    public void setMaxSpeed(int maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMaxspeed(float maxspeed) {
+        this.maxspeed = maxspeed;
+    }
+
+    public float getMinspeed() {
+        return minspeed;
+    }
+
+    public void setMinspeed(float minspeed) {
+        this.minspeed = minspeed;
+    }
+
+    public float getMaxforce() {
+        return maxforce;
+    }
+
+    public void setMaxforce(float maxforce) {
+        this.maxforce = maxforce;
     }
 
     public float getAngleInDegrees() {

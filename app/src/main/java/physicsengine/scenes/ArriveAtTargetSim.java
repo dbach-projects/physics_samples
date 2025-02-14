@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import physicsengine.Vector2D;
 import physicsengine.shapes.CircleWrapper;
-import physicsengine.shapes.Shape;
+import physicsengine.shapes.WrapperShape;
 import physicsengine.simulation.Body;
 import physicsengine.simulation.SolidBody;
 
@@ -31,7 +31,7 @@ public class ArriveAtTargetSim implements Sim {
         this.pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
 
-        Shape circle1 = new CircleWrapper(0, 0, 15, baseColor);
+        WrapperShape circle1 = new CircleWrapper(0, 0, 15, baseColor);
             posX1 = (float) Math.random() * (width - 50);
             posY1 = (float) Math.random() * (height - 50);
         this.pane.setOnMouseClicked((event) -> {
@@ -40,12 +40,12 @@ public class ArriveAtTargetSim implements Sim {
             Vector2D v = new Vector2D(posX1, posY1);
             this.target.setPosition(v);
         });
-        this.target = new SolidBody(posX1, posY1, 1, circle1);
+        this.target = new SolidBody(posX1, posY1, 3, 0, 1, circle1);
 
-        Shape circle2 = new CircleWrapper(0, 0, 5, baseColor);
+        WrapperShape circle2 = new CircleWrapper(0, 0, 5, baseColor);
         float posX2 = (float) Math.random() * (width - 50);
         float posY2 = (float) Math.random() * (height - 50);
-        this.vehicle = new SolidBody(posX2, posY2, 1, circle2);
+        this.vehicle = new SolidBody(posX2, posY2, 3,0, 1, circle2);
 
         this.bodyItems.add(this.target);
         this.bodyItems.add(this.vehicle);
@@ -61,11 +61,12 @@ public class ArriveAtTargetSim implements Sim {
     @Override
     public Runnable getRendererCallback() {
         return () -> {
-            boolean hasArrived = this.vehicle.arrive(this.target);
+            this.vehicle.seek(this.target.getPosition());
+            boolean hasArrived = this.vehicle.hasArrived(this.target.getPosition(), 10);
             if (hasArrived) {
-               ((CircleWrapper) this.target.getShape()).setFill((Color) this.arriveColor);
+                this.target.getShape().setFill((Color) this.arriveColor);
             } else {
-                ((CircleWrapper) this.target.getShape()).setFill((Color) this.baseColor);
+                this.target.getShape().setFill((Color) this.baseColor);
             }
             this.target.run();
             this.vehicle.run();
