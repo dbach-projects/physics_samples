@@ -38,7 +38,7 @@ public class SpringSim implements Sim {
         this.anchor = new SolidBody(300, 275,3, 0, 10, circle1, false);
         SolidBody solidBob = new SolidBody(300, 475,3, 0, 10, circle2);
         this.bob = (Body) solidBob;
-        WrapperShape line = new PolylineWrapper(300, 275, 300, 475, color);
+        WrapperShape line = new PolylineWrapper(300, 275, 300, 475,3f, color);
         this.line = new SolidBody(0, 0, 3,0,0, line, false);
         this.spring = new Spring(this.anchor);
 

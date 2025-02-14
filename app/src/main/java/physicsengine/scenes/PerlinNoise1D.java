@@ -37,7 +37,7 @@ public class PerlinNoise1D implements Sim {
            result.add(ypos);
         }
  
-        PolylineWrapper line = new PolylineWrapper(result, Color.GREEN);
+        PolylineWrapper line = new PolylineWrapper(result, 3f, Color.GREEN);
         Body lineBody = new SolidBody(0,0,1,3,0, line);
 
         this.bodyItems.add(lineBody);

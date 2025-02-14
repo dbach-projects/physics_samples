@@ -14,7 +14,7 @@ public class FlowField {
     int rows, cols;
 
 
-    public FlowField(int windowWidth, int windowHeight, int gridResolution, List<List<Double>> angles) {
+    public FlowField(int windowWidth, int windowHeight, int gridResolution, float vecMagnatude, List<List<Double>> angles) {
         rows = (int) (windowWidth / gridResolution);
         cols = (int) (windowHeight / gridResolution);
 
@@ -29,12 +29,12 @@ public class FlowField {
                 this.flowField[x][y] = Vector2D.fromAngle(angles.get(x).get(y).floatValue(), 1);
 
                 //flowfield - lines and all
-                this.flowField[x][y].setMag((float) (gridResolution * .5));
+                this.flowField[x][y].setMag(vecMagnatude);
 
                 double endXpos = xPos + this.flowField[x][y].getX();
                 double endYpos = yPos + this.flowField[x][y].getY();
-                WrapperShape line = new PolylineWrapper(xPos, yPos, endXpos,endYpos, Color.GREY);
-                Body solidLine = new SolidBody(0,0,1,3,0, line);
+                WrapperShape line = new PolylineWrapper(xPos, yPos, endXpos,endYpos, 1f, Color.hsb(0, 0, .5, .3));
+                Body solidLine = new SolidBody(0,0,3,0,0, line);
                 this.flowFieldLines[x][y] = solidLine;
             }
         }

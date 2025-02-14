@@ -22,12 +22,12 @@ public class FlowFieldSim implements Sim {
     private Pane pane;
     private List<Body> bodyItems = new ArrayList<Body>();
     private FlowField ff;
-    private int gridResolution = 20;
+    private int gridResolution = 30;
 
     public FlowFieldSim(int width, int height) {
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
-        this.pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.pane.setBackground(new Background(new BackgroundFill(Color.hsb(180, 0.17, 0.97, 1), CornerRadii.EMPTY, Insets.EMPTY)));
 
         // generate perlin noise to orient the flow field 
         PerlinNoise pl = new PerlinNoise();
@@ -38,7 +38,7 @@ public class FlowFieldSim implements Sim {
         }
 
         // instanciate a flow field
-        ff = new FlowField(width, height, this.gridResolution, angles);
+        ff = new FlowField(width, height, this.gridResolution, (float) (Math.random() * this.gridResolution), angles);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class FlowFieldSim implements Sim {
     public Runnable getRendererCallback() {
         return () -> {
             //bodies to move through flow field
-            WrapperShape circle = new CircleWrapper(0,0, 5, Color.GREY);
+            int radius = (int)(Math.random() * 10) + 1;
+            WrapperShape circle = new CircleWrapper(0,0, radius , Color.hsb(radius * 36, Math.random(), Math.random(), 1));
             Body solidCircle = new SolidBody((float)(600),(float) (Math.random() * 600), 3, 0, 2, circle);
             bodyItems.add(solidCircle);
             this.pane.getChildren().add(solidCircle.getNode());

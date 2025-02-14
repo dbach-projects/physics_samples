@@ -25,7 +25,7 @@ public class FlockingSim implements Sim {
     public FlockingSim(int width, int height) {
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
-        this.pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.pane.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //get mouse position
         this.pane.setOnMouseMoved(event -> {
