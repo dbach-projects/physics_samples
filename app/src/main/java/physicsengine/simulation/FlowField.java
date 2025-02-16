@@ -34,15 +34,15 @@ public class FlowField {
                 double endXpos = xPos + this.flowField[x][y].getX();
                 double endYpos = yPos + this.flowField[x][y].getY();
                 WrapperShape line = new PolylineWrapper(xPos, yPos, endXpos,endYpos, 1f, Color.hsb(0, 0, .5, .3));
-                Body solidLine = new SolidBody(0,0,3,0,0, line);
+                Body solidLine = new SolidBody(0f,0f,3f,0f,0f, -1, line);
                 this.flowFieldLines[x][y] = solidLine;
             }
         }
     }
     
     public Vector2D lookup(Vector2D position, int gridResolution) {
-        int column = Common.constrain((int) (position.getY() / gridResolution), 0, this.cols - 1);
-        int row = Common.constrain((int) (position.getX() / gridResolution), 0, this.rows - 1);
+        int column = (int)Common.constrain(position.getY() / gridResolution, 0, this.cols - 1);
+        int row = (int)Common.constrain(position.getX() / gridResolution, 0, this.rows - 1);
         return this.flowField[row][column].copy();
     }
 

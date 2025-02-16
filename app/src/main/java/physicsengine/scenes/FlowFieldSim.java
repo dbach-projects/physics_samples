@@ -60,7 +60,7 @@ public class FlowFieldSim implements Sim {
             //bodies to move through flow field
             int radius = (int)(Math.random() * 10) + 1;
             WrapperShape circle = new CircleWrapper(0,0, radius , Color.hsb(radius * 36, Math.random(), Math.random(), 1));
-            Body solidCircle = new SolidBody((float)(600),(float) (Math.random() * 600), 3, 0, 2, circle);
+            Body solidCircle = new SolidBody((float)(600),(float) (Math.random() * 600), 3, 0, 2, -1, circle);
             bodyItems.add(solidCircle);
             this.pane.getChildren().add(solidCircle.getNode());
 

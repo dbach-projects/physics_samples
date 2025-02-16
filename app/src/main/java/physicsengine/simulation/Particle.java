@@ -8,8 +8,8 @@ import physicsengine.shapes.WrapperShape;
 public class Particle extends BaseBody implements Body{
     private WrapperShape shape;
 
-    public Particle(float posX, float posY, float maxspeed, float minspeed, WrapperShape shape) {
-        super.setLifespan(200);
+    public Particle(float posX, float posY, float maxspeed, float minspeed,  int lifespan, WrapperShape shape) {
+        super.setLifespan(lifespan);
         super.setMaxspeed(maxspeed);
         super.setMinspeed(minspeed);
         super.setPosition(new Vector2D(posX, posY));

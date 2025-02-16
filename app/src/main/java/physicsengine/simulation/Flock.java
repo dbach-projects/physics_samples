@@ -126,6 +126,7 @@ public class Flock {
                 count++;
             }
         }
-        return count;
+
+        return (float) count / boids.size(); //range [0,1]
     }
 }

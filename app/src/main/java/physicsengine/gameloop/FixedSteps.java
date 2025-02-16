@@ -41,7 +41,6 @@ public class FixedSteps extends GameLoop {
         }
     }
 
-
     @Override
     public void stop()
     {

@@ -17,48 +17,62 @@ import physicsengine.simulation.SolidBody;
 import physicsengine.forces.*;
 
 public class GravitySim implements Sim {
-    private int NUMBER_OF_BODIES = 4;
     private Pane pane;
     private List<Body> bodyItems = new ArrayList<Body>();
     private Paint color;
+    int paneWidth = 600;
+    int paneHeight = 574;
 
     public GravitySim(int width, int height) {
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
-        this.color = Color.rgb(0, 155, 255, 0.4);
+        this.color = Color.PURPLE;
     }
 
     @Override
-    public void stageSim() {
-        //TODO: Race condition here? (float) this.pane.getWidth() doesnt seem to work
-        System.out.println("Pane Width: " + this.pane.getWidth());
-        float paneWidth = 600;
-        
-        for (int i = 0; i < NUMBER_OF_BODIES; i++) {
-            int x = (int) (paneWidth / NUMBER_OF_BODIES) * i + 75;
-            int y = 150;
-            float mass = (float) Math.random();
-            WrapperShape solidBodyCircle = new CircleWrapper(0, 0, (mass * 20) + 10, color);
-            bodyItems.add(new SolidBody(x, y,3,0, mass, solidBodyCircle));
-        }
-
+    public void stageSim() {        
         for (Body body : bodyItems) {
             this.pane.getChildren().add(body.getNode());
         }
-
     }
 
     @Override
     public Runnable getRendererCallback() {
-        float paneWidth = 600;
-        float paneHeight = 575;
-
         return () -> {
-            // Loop for Body Items
+            //remove if exeeded lifespan
+            this.bodyItems.removeIf(b -> {
+                if (b.isDead()) {
+                    pane.getChildren().remove(b.getNode());
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            //add new bodies
+            if (Math.random() < .1) {
+                int x = (int) (Math.random() * this.paneWidth);
+                int y = this.paneHeight / 2;
+                float mass = (float) Math.random();
+                WrapperShape circle = new CircleWrapper(0, 0, (mass * 20) + 10, color);
+                Body solidBodyCircle = new SolidBody(x, y, 3, 0, mass, 200, circle);
+                bodyItems.add(solidBodyCircle);
+                this.pane.getChildren().add(solidBodyCircle.getNode());
+            }
+
+            // apply logic and forces
             for (Body body : this.bodyItems) {
                 Force gravity = new Gravity(0f, 0.1f, body.getMass());
                 body.applyForce(gravity);
+
+                for (Body body2 : bodyItems) {
+                    boolean collide = ((SolidBody) body).circleCircleCollision((SolidBody) body, (SolidBody) body2);
+                    if (collide) {
+                        ((SolidBody) body).getShape().setFill(Color.RED);
+                        ((SolidBody) body).bounceCircle((SolidBody)body2);
+                    }
+                }
 
                 // apply force if in contact with the edge of the pane
                 if (body.contactEdge(paneWidth, paneHeight)) {

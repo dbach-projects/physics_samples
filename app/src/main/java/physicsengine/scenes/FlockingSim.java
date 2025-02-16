@@ -9,9 +9,11 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import physicsengine.Common;
 import physicsengine.Vector2D;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.WrapperShape;
+import physicsengine.simulation.BinLatticeSubdivision;
 import physicsengine.simulation.Body;
 import physicsengine.simulation.Flock;
 import physicsengine.simulation.SolidBody;
@@ -21,8 +23,13 @@ public class FlockingSim implements Sim {
     private List<Body> bodyItems = new ArrayList<Body>();
     private Vector2D mousePos = new Vector2D();
     private Flock flock = new Flock();
+    private int screenWidth, screenHeight;
+    private int pxPerGrid = 100;
 
     public FlockingSim(int width, int height) {
+        this.screenWidth = width;
+        this.screenHeight = height;
+
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
         this.pane.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -35,9 +42,9 @@ public class FlockingSim implements Sim {
         });
 
         // create vehicles
-        for (int i = 0; i < 100; i++) {
-            WrapperShape vehicle = new CircleWrapper(0, 0, 10, Color.BLUE);
-            Body vehicleBody = new SolidBody((float)(width / 2 + Math.random() * 100), (float)(height / 2 + Math.random() * 100), 3, 0.25f, 10, vehicle);
+        for (int i = 0; i < 300; i++) {
+            WrapperShape vehicle = new CircleWrapper(0, 0, Math.random() * 10, Color.BLUE);
+            Body vehicleBody = new SolidBody((float)(width / 2 + Math.random() * 100), (float)(height / 2 + Math.random() * 100), 3, 0.25f, 10, -1, vehicle);
             vehicleBody.setVelocity(new Vector2D((float)Math.random() * 100, (float)Math.random() * 100));
             this.bodyItems.add(vehicleBody);
 
@@ -58,15 +65,28 @@ public class FlockingSim implements Sim {
     @Override
     public Runnable getRendererCallback() {
         return () -> {
-            for (Body body : this.bodyItems) {
 
-                flock.run(body, this.bodyItems, this.mousePos);
+            // BinLattice to lookup neighbours and improve performance
+            BinLatticeSubdivision bin = new BinLatticeSubdivision(this.screenWidth, this.screenHeight, this.pxPerGrid, this.bodyItems);
+            List<Body>[][] subGrid = bin.getSubDivGrid();
+                
+            for (Body body : this.bodyItems) {
+                int row = (int)(body.getPosition().getX() / this.pxPerGrid);
+                int col = (int)(body.getPosition().getY() / this.pxPerGrid);
+                int rows = (int) (this.screenWidth / this.pxPerGrid);
+                int cols = (int) (this.screenHeight / this.pxPerGrid);
+                col = (int)Common.constrain(col, 0, cols - 1);
+                row = (int)Common.constrain(row, 0, rows - 1);
+
+                List<Body> neighbours = subGrid[row][col];
+
+                flock.run(body, neighbours, this.mousePos);
 
                 flock.wrapping(body, (float) this.pane.getWidth(), (float) this.pane.getHeight());
-                
-                float count = flock.associationCount(body, bodyItems, 200);
 
-                ((SolidBody)body).getShape().setFill(Color.hsb(290, .5, (count) / this.bodyItems.size()));
+                double brightness = flock.associationCount(body, neighbours, 50);
+
+                ((SolidBody)body).getShape().setFill(Color.hsb(290, .5, brightness));
 
                 body.run();
             }

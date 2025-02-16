@@ -2,6 +2,7 @@ package physicsengine.simulation;
 
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.event.EventHandler;
 import physicsengine.Vector2D;
@@ -11,7 +12,8 @@ import physicsengine.shapes.WrapperShape;
 public class SolidBody extends BaseBody implements Body {
     private WrapperShape shape;
 
-    public SolidBody(float posX, float posY, float maxspeed, float minspeed, float mass, WrapperShape shape) {
+    public SolidBody(float posX, float posY, float maxspeed, float minspeed, float mass, int lifespan, WrapperShape shape) {
+        super.setLifespan(lifespan);
         super.setMass(mass);
         super.setMaxspeed(maxspeed);
         super.setMinspeed(minspeed);
@@ -26,7 +28,8 @@ public class SolidBody extends BaseBody implements Body {
         this.shape = shape;
     }
 
-    public SolidBody(float posX, float posY,float maxspeed, float minspeed, float mass,  WrapperShape shape, boolean applyForces) {
+    public SolidBody(float posX, float posY, float maxspeed, float minspeed, float mass, int lifespan, WrapperShape shape, boolean applyForces) {
+        super.setLifespan(lifespan);
         super.setMass(mass);
         super.setMaxspeed(maxspeed);
         super.setMinspeed(minspeed);
@@ -75,6 +78,29 @@ public class SolidBody extends BaseBody implements Body {
         return false;
     }
 
+    public boolean circleCircleCollision(SolidBody c1, SolidBody c2) {
+        if (c1 != c2) {
+            double r1 = ((Circle) c1.getShape()).getRadius();
+            double r2 = ((Circle) c2.getShape()).getRadius();
+            double dist = Vector2D.euclideanDistance(c1.getPosition(), c2.getPosition());
+
+            if (r1 + r2 >= dist) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public void bounceCircle(SolidBody c2) {
+        double r2 = ((Circle) c2.getShape()).getRadius();
+        float bounce = -10f;
+        // this.getPosition().setX((float) (c2.getPosition().getX() + r2));
+        // this.getPosition().setY((float)(c2.getPosition().getY() + r2));
+    }
+
     @Override
     public void bounceEdges(float width, float height) {
         float bounce = -0.9f;
@@ -94,11 +120,6 @@ public class SolidBody extends BaseBody implements Body {
             this.getPosition().setY((float) (height - radius));
             this.getVelocity().setY(this.getVelocity().getY() * bounce);
         }
-    }
-
-    @Override
-    public boolean isDead() {
-        return false;
     }
 
     @Override

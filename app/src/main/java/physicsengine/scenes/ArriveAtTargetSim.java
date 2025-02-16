@@ -40,12 +40,12 @@ public class ArriveAtTargetSim implements Sim {
             Vector2D v = new Vector2D(posX1, posY1);
             this.target.setPosition(v);
         });
-        this.target = new SolidBody(posX1, posY1, 3, 0, 1, circle1);
+        this.target = new SolidBody(posX1, posY1, 3f, 0f, 1f, -1, circle1);
 
         WrapperShape circle2 = new CircleWrapper(0, 0, 5, baseColor);
         float posX2 = (float) Math.random() * (width - 50);
         float posY2 = (float) Math.random() * (height - 50);
-        this.vehicle = new SolidBody(posX2, posY2, 3,0, 1, circle2);
+        this.vehicle = new SolidBody(posX2, posY2, 3f,0f, 1f, -1, circle2);
 
         this.bodyItems.add(this.target);
         this.bodyItems.add(this.vehicle);

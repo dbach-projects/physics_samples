@@ -45,7 +45,7 @@ public class App extends Application {
         /* CREATE SCENES */
         scenes.addAll("Flocking", "FlowField","PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
         sceneSelector.setItems(scenes);
-        sceneSelector.getSelectionModel().select(scenes.get(0));
+        sceneSelector.getSelectionModel().select(scenes.get(5));
 
         /* LAY OUT PANES */
         BorderPane borderPane = new BorderPane();
@@ -76,8 +76,8 @@ public class App extends Application {
 
         // stage the simulation
         selectedSim = setSim(borderPane, sceneSelector);
-        selectedSim.stageSim();
         renderer = selectedSim.getRendererCallback();
+        selectedSim.stageSim();
 
         gameLoop = new FixedSteps(renderer, fpsReporter);
         gameLoop.start();

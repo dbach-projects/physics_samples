@@ -27,11 +27,11 @@ public class Emitter {
 
         if (r < 0.5) {
             WrapperShape circle = new CircleWrapper(0, 0, 10, color);
-            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, circle);
+            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, 200, circle);
             this.particles.add(p);
         } else {
             WrapperShape rectangle = new RectangleWrapper(15, 15, color);
-            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, rectangle);
+            p = new Particle(this.origin.getX(), this.origin.getY(),1.5f,0, 200, rectangle);
             this.particles.add(p);
         }
 

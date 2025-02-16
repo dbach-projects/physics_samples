@@ -40,7 +40,7 @@ public class ParticleSim implements Sim {
         this.bodies = new ArrayList<Body>();
         this.emitters = new ArrayList<Emitter>();
         WrapperShape circle = new CircleWrapper(0, 0, 20, color);
-        SolidBody solidRepeller = new SolidBody(0, 0,3,0, 10, circle);
+        SolidBody solidRepeller = new SolidBody(0, 0,3,0, 10, -1, circle);
         this.repeller = (Body) solidRepeller;
         this.oscillation = new Oscillation(new Vector2D(300, 200));
 
