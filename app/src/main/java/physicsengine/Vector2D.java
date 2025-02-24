@@ -104,8 +104,17 @@ public class Vector2D {
     }
 
     public float heading() {
-        return (float) Math.atan2(this.getY(),this.getX());
-    } 
+        return (float) Math.atan2(this.getY(), this.getX());
+    }
+    
+    public static Vector2D normalize(Vector2D v) {
+        Vector2D vc = v.copy();
+        float m = vc.mag();
+        if (m > 0) {
+            vc.div(m);
+        }
+        return vc;
+    }
 
     /**
      * This method returns a unit vector pointing in a random direction.
@@ -136,6 +145,11 @@ public class Vector2D {
 
     public static Vector2D mult(Vector2D v1, Vector2D v2) {
         Vector2D v3 = new Vector2D(v1.getX() * v2.getX(), v1.getY() * v2.getY());
+        return v3;
+    }
+
+    public static Vector2D mult(Vector2D v1, float f) {
+        Vector2D v3 = new Vector2D(v1.getX() * f, v1.getY() * f);
         return v3;
     }
 

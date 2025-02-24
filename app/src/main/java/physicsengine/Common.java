@@ -5,6 +5,9 @@ import java.util.List;
 
 public class Common {
 
+    public static float RESTITUTION = 0.75f;
+
+
     public static double constrain(int val, int min_val, int max_val) {
         return Math.min(max_val, Math.max(min_val, val));
     }

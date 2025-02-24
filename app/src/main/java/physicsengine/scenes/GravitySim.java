@@ -19,7 +19,6 @@ import physicsengine.forces.*;
 public class GravitySim implements Sim {
     private Pane pane;
     private List<Body> bodyItems = new ArrayList<Body>();
-    private Paint color;
     int paneWidth = 600;
     int paneHeight = 574;
 
@@ -27,7 +26,6 @@ public class GravitySim implements Sim {
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
-        this.color = Color.PURPLE;
     }
 
     @Override
@@ -51,12 +49,14 @@ public class GravitySim implements Sim {
             });
 
             //add new bodies
-            if (Math.random() < .1) {
+            if (Math.random() < .25) {
                 int x = (int) (Math.random() * this.paneWidth);
-                int y = this.paneHeight / 2;
-                float mass = (float) Math.random();
-                WrapperShape circle = new CircleWrapper(0, 0, (mass * 20) + 10, color);
-                Body solidBodyCircle = new SolidBody(x, y, 3, 0, mass, 200, circle);
+                float rand = (float) Math.random();
+                float mass = (float) (rand * 10);
+                float radius = mass + 5;
+                Paint color = Color.hsb(mass * 36, Math.random(), Math.random());
+                WrapperShape circle = new CircleWrapper(0, 0, radius, color);
+                Body solidBodyCircle = new SolidBody(x, 20, 3, 0, mass, 500, circle);
                 bodyItems.add(solidBodyCircle);
                 this.pane.getChildren().add(solidBodyCircle.getNode());
             }
@@ -69,7 +69,6 @@ public class GravitySim implements Sim {
                 for (Body body2 : bodyItems) {
                     boolean collide = ((SolidBody) body).circleCircleCollision((SolidBody) body, (SolidBody) body2);
                     if (collide) {
-                        ((SolidBody) body).getShape().setFill(Color.RED);
                         ((SolidBody) body).bounceCircle((SolidBody)body2);
                     }
                 }

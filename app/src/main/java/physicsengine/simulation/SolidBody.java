@@ -5,6 +5,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.event.EventHandler;
+import physicsengine.Common;
 import physicsengine.Vector2D;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.WrapperShape;
@@ -95,10 +96,39 @@ public class SolidBody extends BaseBody implements Body {
     }
 
     public void bounceCircle(SolidBody c2) {
-        double r2 = ((Circle) c2.getShape()).getRadius();
-        float bounce = -10f;
-        // this.getPosition().setX((float) (c2.getPosition().getX() + r2));
-        // this.getPosition().setY((float)(c2.getPosition().getY() + r2));
+        // get the mtd
+        Vector2D delta = Vector2D.sub(super.getPosition(), c2.getPosition());
+        float dist = Vector2D.euclideanDistance(this.getPosition(), c2.getPosition());
+        // minimum translation distance to push balls apart after intersecting
+        float c1Rad = (float)((Circle)this.shape.getShape()).getRadius();
+        float c2Rad = (float)((Circle)c2.shape.getShape()).getRadius();
+        delta.mult( ((c1Rad + c2Rad) - dist) / dist); 
+
+
+        // resolve intersection --
+        // inverse mass quantities
+        float im1 = 1 / super.getMass(); 
+        float im2 = 1 / c2.getMass();
+
+        // push-pull them apart based off their mass
+        this.getPosition().add(Vector2D.mult(delta, im1 / (im1 + im2)));
+        c2.getPosition().sub(Vector2D.mult(delta, im2 / (im1 + im2)));
+
+        // impact speed
+        Vector2D v = Vector2D.sub(super.getVelocity(), c2.getVelocity());
+        float vn = v.dot(Vector2D.normalize(delta));
+
+        // sphere intersecting but moving away from each other already
+        if (vn > 0.0f) return;
+
+        // collision impulse
+        float i = (-(1.0f + Common.RESTITUTION) * vn) / (im1 + im2);
+        Vector2D impulse = Vector2D.normalize(delta);
+        impulse.mult(i);
+
+        // change in momentum
+        this.getVelocity().add(Vector2D.mult(impulse, im1));
+        c2.getVelocity().sub(Vector2D.mult(impulse, im2));
     }
 
     @Override
