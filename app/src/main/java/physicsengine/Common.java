@@ -4,25 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Common {
-
     public static float RESTITUTION = 0.75f;
 
 
-    public static double constrain(int val, int min_val, int max_val) {
-        return Math.min(max_val, Math.max(min_val, val));
-    }
-
-    public static double constrain(double val, double min_val, double max_val) {
-        return Math.min(max_val, Math.max(min_val, val));
+    public static float constrain(float val, float min_val, float max_val) {
+        return Math.max(Math.min(val, max_val), min_val);
     }
 
     public static double normalize(double value, double minA, double maxA, double minB, double maxB) {
         double newval = (value - minA) / (maxA - minA) * (maxB - minB) + minB;
 
         if (minB < maxB) {
-            return Common.constrain(newval, minB, maxB);
+            return Common.constrain((float)newval, (float)minB, (float)maxB);
         } else {
-            return Common.constrain(newval, maxB, minB);
+            return Common.constrain((float)newval, (float)maxB, (float)minB);
         }
     }
 

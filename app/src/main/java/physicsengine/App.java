@@ -45,7 +45,7 @@ public class App extends Application {
         /* CREATE SCENES */
         scenes.addAll("Flocking", "FlowField","PerlinNoise2D","PerlinNoise1D", "ArriveAtSim", "GravitySim", "ParticleSim", "SpringSim", "PendulumSim");
         sceneSelector.setItems(scenes);
-        sceneSelector.getSelectionModel().select(scenes.get(5));
+        sceneSelector.getSelectionModel().select(scenes.get(0));
 
         /* LAY OUT PANES */
         BorderPane borderPane = new BorderPane();
@@ -61,8 +61,6 @@ public class App extends Application {
             gameLoop.stop();
             selectedSim = setSim(borderPane, sceneSelector);
             renderer = selectedSim.getRendererCallback();
-            scene.setRoot(new Pane());
-            scene.setRoot(borderPane);
             selectedSim.stageSim();
             gameLoop = new FixedSteps(renderer, fpsReporter);
             gameLoop.start();
@@ -70,7 +68,7 @@ public class App extends Application {
 
         scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Physics Engine Example");
+        primaryStage.setTitle("Physics Samples");
         primaryStage.setResizable(false);
         primaryStage.show();
 
@@ -132,6 +130,7 @@ public class App extends Application {
         // remove old centerpane
         if (borderPane.getCenter() != null) {
             borderPane.getChildren().remove(borderPane.getCenter());
+
         }
 
         // add new pane

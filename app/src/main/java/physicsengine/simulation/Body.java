@@ -1,52 +1,14 @@
 package physicsengine.simulation;
 
 import javafx.scene.Node;
+import javafx.scene.shape.Shape;
 import physicsengine.Common;
 import physicsengine.Vector2D;
 import physicsengine.forces.Force;
 import physicsengine.shapes.WrapperShape;
 
-public interface Body {
 
-    Node getNode();
-
-    Vector2D getPosition();
-
-    float getMass();
-
-    public void applyForce(Force force);
-    
-    public void applyForce(Vector2D force);
-
-    void run();
-
-    void attract(Body body1);
-
-    boolean contactEdge(float paneWidth, float paneHeight);
-
-    Vector2D getVelocity();
-
-    void bounceEdges(float paneWidth, float paneHeight);
-
-    boolean contains(Body body);
-
-    public void repell(Body body, int power);
-
-    boolean isDead();
-
-    void setPosition(Vector2D v);
-
-    void setVelocity(Vector2D v);
-
-    float getMaxspeed();
-
-    float getMinspeed();
-
-    float getMaxforce();
-}
-
-
-abstract class BaseBody {
+public abstract class Body {
     private Vector2D position, velocity, acceleration;
     private float angleInDegrees, angleVelocity, angleAcceleration;
     private float maxspeed, minspeed;
@@ -94,10 +56,26 @@ abstract class BaseBody {
         }
     }
 
+    public void bounceEdges(float width, float height, float shapeWidth) {
+        float bounce = -0.9f;
+
+        if (this.getPosition().getX() > width - shapeWidth) {
+            this.getPosition().setX((float) (width - shapeWidth));
+            this.getVelocity().setX(this.getVelocity().getX() * bounce);
+        } else if (this.getPosition().getX() < shapeWidth) {
+            this.getPosition().setX((float) shapeWidth);
+            this.getVelocity().setX(this.getVelocity().getX() * bounce);
+        }
+        if (this.getPosition().getY() > height - shapeWidth) {
+            this.getPosition().setY((float) (height - shapeWidth));
+            this.getVelocity().setY(this.getVelocity().getY() * bounce);
+        }
+    }
+
     public void attract(Body body) {
         int G = 1; //global gravitational constant
         Vector2D force = Vector2D.sub(this.position, body.getPosition());
-        float distance = constrain(force.mag(), 5, 25);
+        float distance = Common.constrain(force.mag(), 5f, 25f);
         float strength = (G * (this.mass * body.getMass())) / (distance * distance);
         force.setMag(strength);
         body.applyForce(force);
@@ -236,11 +214,6 @@ abstract class BaseBody {
         this.angleAcceleration = angleAcceleration;
     }
 
-    private float constrain(float dist, float min, float max) {
-        return Math.max(Math.min(dist, max), min);
-
-    }
-
     public boolean getIsDragged() {
         return this.isDragged;
     }
@@ -248,4 +221,12 @@ abstract class BaseBody {
     public void setIsDragged(boolean isDragged) {
         this.isDragged = isDragged;
     }
+
+    public abstract void run();
+
+    public abstract Node getNode();
+
+    public abstract Shape getShape();
+
+    public abstract boolean contactEdge(float width, float height);
 }

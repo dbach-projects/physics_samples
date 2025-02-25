@@ -10,6 +10,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.PolylineWrapper;
 import physicsengine.shapes.WrapperShape;
@@ -94,7 +95,11 @@ public class SpringSim implements Sim {
                 }
 
                 // update object
-                body.bounceEdges(paneWidth, paneHeight);
+                float radius = 1;
+                if(body.getShape() instanceof Circle){
+                    radius = (float)((Circle)body.getShape()).getRadius();
+                }
+                body.bounceEdges((float)paneWidth, (float)paneHeight, radius);
                 body.run();
             }
         };

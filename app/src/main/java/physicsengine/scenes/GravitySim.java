@@ -10,6 +10,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.WrapperShape;
 import physicsengine.simulation.Body;
@@ -29,7 +30,10 @@ public class GravitySim implements Sim {
     }
 
     @Override
-    public void stageSim() {        
+    public void stageSim() {
+        System.out.println("Pane Width: " + this.pane.getWidth());
+        System.out.println("Pane Height: " + this.pane.getHeight());
+        
         for (Body body : bodyItems) {
             this.pane.getChildren().add(body.getNode());
         }
@@ -80,7 +84,7 @@ public class GravitySim implements Sim {
                 }
 
                 // update object
-                body.bounceEdges(paneWidth, paneHeight);
+                body.bounceEdges((float)paneWidth, (float)paneHeight, (float)((Circle)body.getShape()).getRadius());
                 body.run();
             }
         };

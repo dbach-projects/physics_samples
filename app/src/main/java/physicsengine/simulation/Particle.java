@@ -1,11 +1,12 @@
 package physicsengine.simulation;
 
 import javafx.scene.Node;
+import javafx.scene.shape.Shape;
 import physicsengine.Vector2D;
 import physicsengine.forces.Force;
 import physicsengine.shapes.WrapperShape;
 
-public class Particle extends BaseBody implements Body{
+public class Particle extends Body{
     private WrapperShape shape;
 
     public Particle(float posX, float posY, float maxspeed, float minspeed,  int lifespan, WrapperShape shape) {
@@ -39,8 +40,8 @@ public class Particle extends BaseBody implements Body{
         super.getAcceleration().add(f);
     }
 
-    public WrapperShape getShape() {
-        return this.shape;
+    public Shape getShape() {
+        return this.shape.getShape();
     }
 
     @Override
@@ -49,21 +50,9 @@ public class Particle extends BaseBody implements Body{
     }
 
     @Override
-    public boolean contactEdge(float paneWidth, float paneHeight) {
+    public boolean contactEdge(float width, float height) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'contactEdge'");
-    }
-
-    @Override
-    public void bounceEdges(float paneWidth, float paneHeight) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bounceEdges'");
-    }
-
-    @Override
-    public boolean contains(Body body) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
     }
 
 }

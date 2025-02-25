@@ -81,7 +81,7 @@ public class Flock {
         int count = 0;
         for (Body boid : boids) {
             double dist = Vector2D.euclideanDistance(source.getPosition(), boid.getPosition());
-            if ((this != boid) && (dist < neighbourDistance)) {
+            if ((source != boid) && (dist < neighbourDistance)) {
                 sum.add(boid.getPosition());
                 count++;
             }

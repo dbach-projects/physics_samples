@@ -2,11 +2,13 @@ package physicsengine.simulation;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import physicsengine.Vector2D;
+import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.RectangleWrapper;
 import physicsengine.shapes.WrapperShape;
 
-public class LiquidBody extends BaseBody implements Body {
+public class LiquidBody extends Body {
     private int x, y, w, h;
     private WrapperShape shape;
     
@@ -29,26 +31,19 @@ public class LiquidBody extends BaseBody implements Body {
     }
 
     @Override
+    public boolean contactEdge(float width, float height) {
+        //TODO: check this implementation
+        if (this.shape instanceof CircleWrapper) {
+            double radius = ((CircleWrapper) shape).getRadius();
+            return (super.getPosition().getY() > height - radius - 1);
+        }
+        return false;
+    }
+
+    @Override
     public void run() {
         this.update();
         this.draw(this.shape);
-    }
-
-    @Override
-    public boolean contactEdge(float paneWidth, float paneHeight) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contactEdge'");
-    }
-
-    @Override
-    public void bounceEdges(float paneWidth, float paneHeight) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bounceEdges'");
-    }
-
-    @Override
-    public boolean isDead() {
-        return false;
     }
 
     @Override
@@ -56,7 +51,7 @@ public class LiquidBody extends BaseBody implements Body {
         return this.shape.getNode();
     }
 
-    public WrapperShape getShape() {
-        return this.shape;
+    public Shape getShape() {
+        return this.shape.getShape();
     }
 }

@@ -10,7 +10,7 @@ import physicsengine.Vector2D;
 import physicsengine.shapes.CircleWrapper;
 import physicsengine.shapes.WrapperShape;
 
-public class SolidBody extends BaseBody implements Body {
+public class SolidBody extends Body {
     private WrapperShape shape;
 
     public SolidBody(float posX, float posY, float maxspeed, float minspeed, float mass, int lifespan, WrapperShape shape) {
@@ -65,12 +65,6 @@ public class SolidBody extends BaseBody implements Body {
     }
 
     @Override
-    public boolean contains(Body body) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
-    }
-
-    @Override
     public boolean contactEdge(float width, float height) {
         if (this.shape instanceof CircleWrapper) {
             double radius = ((CircleWrapper) shape).getRadius();
@@ -104,7 +98,6 @@ public class SolidBody extends BaseBody implements Body {
         float c2Rad = (float)((Circle)c2.shape.getShape()).getRadius();
         delta.mult( ((c1Rad + c2Rad) - dist) / dist); 
 
-
         // resolve intersection --
         // inverse mass quantities
         float im1 = 1 / super.getMass(); 
@@ -129,27 +122,6 @@ public class SolidBody extends BaseBody implements Body {
         // change in momentum
         this.getVelocity().add(Vector2D.mult(impulse, im1));
         c2.getVelocity().sub(Vector2D.mult(impulse, im2));
-    }
-
-    @Override
-    public void bounceEdges(float width, float height) {
-        float bounce = -0.9f;
-        double radius = 0;
-        if (this.shape instanceof CircleWrapper) {
-            radius = ((CircleWrapper) shape).getRadius();
-        }
-
-        if (this.getPosition().getX() > width - radius) {
-            this.getPosition().setX((float) (width - radius));
-            this.getVelocity().setX(this.getVelocity().getX() * bounce);
-        } else if (this.getPosition().getX() < radius) {
-            this.getPosition().setX((float) radius);
-            this.getVelocity().setX(this.getVelocity().getX() * bounce);
-        }
-        if (this.getPosition().getY() > height - radius) {
-            this.getPosition().setY((float) (height - radius));
-            this.getVelocity().setY(this.getVelocity().getY() * bounce);
-        }
     }
 
     @Override
