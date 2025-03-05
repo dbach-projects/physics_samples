@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import physicsengine.gameloop.FixedSteps;
@@ -48,32 +48,38 @@ public class App extends Application {
         sceneSelector.getSelectionModel().select(scenes.get(0));
 
         /* LAY OUT PANES */
-        BorderPane borderPane = new BorderPane();
-        AnchorPane topPane = new AnchorPane();
-        AnchorPane.setRightAnchor(fpsLabel, 0.0); 
-        AnchorPane.setLeftAnchor(sceneSelector, 0.0);
-        topPane.getChildren().add(fpsLabel);
-        topPane.getChildren().add(sceneSelector);
-        borderPane.setTop(topPane);
+        AnchorPane root = new AnchorPane();
+
+        // controls
+        GridPane controls = new GridPane();
+        controls.add(sceneSelector, 0, 0);
+
+        AnchorPane.setTopAnchor(controls, 0.0);
+        AnchorPane.setLeftAnchor(controls, 0.0);
+        AnchorPane.setTopAnchor(fpsLabel, 10.0);
+        AnchorPane.setRightAnchor(fpsLabel, 10.0);
+
+        root.getChildren().addAll(controls, fpsLabel);
+
  
         /* CHOICEBOX ACTION */
         sceneSelector.setOnAction(event -> {
             gameLoop.stop();
-            selectedSim = setSim(borderPane, sceneSelector);
+            selectedSim = setSim(root, sceneSelector, selectedSim);
             renderer = selectedSim.getRendererCallback();
             selectedSim.stageSim();
             gameLoop = new FixedSteps(renderer, fpsReporter);
             gameLoop.start();
         });
 
-        scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Physics Samples");
         primaryStage.setResizable(false);
         primaryStage.show();
 
         // stage the simulation
-        selectedSim = setSim(borderPane, sceneSelector);
+        selectedSim = setSim(root, sceneSelector, selectedSim);
         renderer = selectedSim.getRendererCallback();
         selectedSim.stageSim();
 
@@ -81,7 +87,7 @@ public class App extends Application {
         gameLoop.start();
     }
 
-    public Sim setSim(BorderPane borderPane, ChoiceBox<String> sceneSelector) {
+    public Sim setSim(AnchorPane anchorPane, ChoiceBox<String> sceneSelector, Sim oldSim) {
         String selectedScene = sceneSelector.getValue();
         Sim selectedSim;
 
@@ -128,16 +134,14 @@ public class App extends Application {
         }
 
         // remove old centerpane
-        if (borderPane.getCenter() != null) {
-            borderPane.getChildren().remove(borderPane.getCenter());
-
+        if (oldSim != null) {
+            Pane oldPane = oldSim.getPane();
+            anchorPane.getChildren().remove(oldPane);
         }
 
         // add new pane
-        if (borderPane.getCenter() == null) {
-            Pane selectedPane = selectedSim.getPane();
-            borderPane.setCenter(selectedPane);
-        }
+        Pane selectedPane = selectedSim.getPane();
+        anchorPane.getChildren().add(0, selectedPane);
 
         return selectedSim;
     }

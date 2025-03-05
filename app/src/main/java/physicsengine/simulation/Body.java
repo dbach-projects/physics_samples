@@ -118,6 +118,16 @@ public abstract class Body {
         return (this.lifespan < 0);
     }
 
+    /* ABSTRACT FUNCTIONS */
+    public abstract void run();
+
+    public abstract Node getNode();
+
+    public abstract Shape getShape();
+
+    public abstract boolean contactEdge(float width, float height);
+
+    /* GETTERS AND SETTERS */
     public boolean getApplyForces() {
         return this.applyForces;
     }
@@ -221,12 +231,4 @@ public abstract class Body {
     public void setIsDragged(boolean isDragged) {
         this.isDragged = isDragged;
     }
-
-    public abstract void run();
-
-    public abstract Node getNode();
-
-    public abstract Shape getShape();
-
-    public abstract boolean contactEdge(float width, float height);
 }

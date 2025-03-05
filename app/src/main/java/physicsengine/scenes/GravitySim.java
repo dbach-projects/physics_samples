@@ -20,10 +20,13 @@ import physicsengine.forces.*;
 public class GravitySim implements Sim {
     private Pane pane;
     private List<Body> bodyItems = new ArrayList<Body>();
-    int paneWidth = 600;
-    int paneHeight = 574;
+    int paneWidth;
+    int paneHeight;
 
     public GravitySim(int width, int height) {
+        this.paneWidth = width;
+        this.paneHeight = height;
+        
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
         this.pane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
