@@ -16,7 +16,6 @@ public class Interpolate {
         return a + (frac * (b - a));
     }
     
-
     static double quadratic(double a0, double a1, double w) {
         return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0;
     }

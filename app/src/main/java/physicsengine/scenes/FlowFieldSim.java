@@ -24,21 +24,21 @@ public class FlowFieldSim implements Sim {
     private FlowField ff;
     private int gridResolution = 30;
 
-    public FlowFieldSim(int width, int height) {
+    public FlowFieldSim(int imgWidth, int imgHeight) {
         this.pane = new Pane();
-        this.pane.setPrefSize(width, height);
+        this.pane.setPrefSize(imgWidth, imgHeight);
         this.pane.setBackground(new Background(new BackgroundFill(Color.hsb(180, 0.17, 0.97, 1), CornerRadii.EMPTY, Insets.EMPTY)));
 
         // generate perlin noise to orient the flow field 
         PerlinNoise pl = new PerlinNoise();
-        List<List<Double>> plNoise = pl.perlinNoise2D(width, height, 5000l, gridResolution, 1.2);
+        List<List<Double>> plNoise = pl.perlinNoise2D(1.0, 1.0, 8, 50932, 50, 1.2, imgWidth, imgHeight);
         List<List<Double>> angles = new ArrayList<List<Double>>();
         for (List<Double> list : plNoise) {
             angles.add(Common.remapArray(list, 0, 1, 0, Math.PI * 2));
         }
 
         // instanciate a flow field
-        ff = new FlowField(width, height, this.gridResolution, (float) (Math.random() * this.gridResolution), angles);
+        ff = new FlowField(imgWidth, imgHeight, this.gridResolution, (float) (Math.random() * this.gridResolution), angles);
     }
 
     @Override

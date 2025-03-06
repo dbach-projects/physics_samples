@@ -60,7 +60,7 @@ public class PerlinNoise {
      * Perlin Noise calculation.
      * @return A WritableImage containing Perlin Noise
      */
-    public List<List<Double>> perlinNoise2D(int imgWidth, int imgHeight, long seed, int pxPerGrid, double persistence) {
+    public List<List<Double>> perlinNoise2D(double frequency, double amplitude, double octaves, long seed, int pxPerGrid, double persistence, int imgWidth, int imgHeight) {
         PerlinNoise.setSeed(seed);
         List<List<Double>> noise = new ArrayList<List<Double>>();
 
@@ -74,18 +74,18 @@ public class PerlinNoise {
                 double yInGrid = (double) y / pxPerGrid;
 
                 double val = 0.0;
-                double frequency = 1;
-                double amplitude = 1;
+                double fre = frequency;
+                double amp = amplitude;
                 double maxValue = 0;
-                int octave = 8;
+                double oct = octaves;
 
-                for (int o = 0; o < octave; o++) {
-                    val += this.calcPerlinNoise2D(xInGrid * frequency, yInGrid * frequency) * amplitude;
+                for (int o = 0; o < oct; o++) {
+                    val += this.calcPerlinNoise2D(xInGrid * fre, yInGrid * fre) * amp;
 
-                    maxValue += amplitude;
+                    maxValue += amp;
 
-                    amplitude *= persistence;
-                    frequency *= 2;
+                    amp *= persistence;
+                    fre *= 2;
                 }
 
                 val = val / maxValue;
@@ -108,11 +108,11 @@ public class PerlinNoise {
      * Perlin Noise calculation.
      * @return A WritableImage containing Perlin Noise
      */
-    public WritableImage perlinNoise2DWritableImage(int imgWidth, int imgHeight, long seed, int pxPerGrid,  double persistence) {
+    public WritableImage perlinNoise2DWritableImage(double frequency, double amplitude, double octaves, long seed, int pxPerGrid, double persistence, int imgWidth, int imgHeight) {
         PerlinNoise.setSeed(seed);
         WritableImage perlinNoiseImage = new WritableImage(imgWidth, imgHeight);
 
-        List<List<Double>> noise = this.perlinNoise2D(imgWidth, imgHeight, seed, pxPerGrid, persistence);
+        List<List<Double>> noise = this.perlinNoise2D(frequency, amplitude, octaves, seed, pxPerGrid, persistence, imgWidth, imgHeight);
 
         for (int x = 0; x < imgWidth; x++) {
             for (int y = 0; y < imgHeight; y++) {
@@ -360,7 +360,7 @@ public class PerlinNoise {
      * @return A Greyscale Color 
      */
     private Color getGreyscaleColor(double val) {
-        int val256 = (int)(255 * val);   // map range [0, 1] to [0, 255]
+        int val256 = (int) (255 * val); // map range [0, 1] to [0, 255]
         return Color.grayRgb(val256);
     }
 }
