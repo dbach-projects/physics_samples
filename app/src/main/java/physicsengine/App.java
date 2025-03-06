@@ -133,7 +133,7 @@ public class App extends Application {
                 break;
         }
 
-        // remove old centerpane
+        // remove old pane
         if (oldSim != null) {
             Pane oldPane = oldSim.getPane();
             anchorPane.getChildren().remove(oldPane);

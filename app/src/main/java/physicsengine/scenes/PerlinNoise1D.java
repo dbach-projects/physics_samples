@@ -42,17 +42,18 @@ public class PerlinNoise1D implements Sim {
         controls.add(amplitude, 0, 1);
 
         Label wavelengthLabel = new Label("wavelength");
-        Slider wavelength = slider(0, 256, 128);
+        Slider wavelength = slider(0, 128, 64);
         controls.add(wavelengthLabel, 0, 2);
         controls.add(wavelength, 0, 3);
 
         Label octivesLabel = new Label("octives");
-        Slider octives = slider(0, 16, 8);
+        Slider octives = slider(1, 16, 8);
         controls.add(octivesLabel, 0, 4);
         controls.add(octives, 0, 5);
 
         AnchorPane.setTopAnchor(controls, 25.0);
         AnchorPane.setLeftAnchor(controls, 0.0);
+
         this.pane.getChildren().addAll(controls);
 
         /* INTERFACE ITEM LISTENERS */
@@ -92,7 +93,6 @@ public class PerlinNoise1D implements Sim {
     }
     
     private void constructNoise(int amplitude, int wavelength, int octives, int divisor, int width, int height) {
-        System.out.println("CONSTRUCT NOISE WITH AMP: " + amplitude);
         PerlinNoise pn = new PerlinNoise();
         List<Double> points = pn.perlinNoise1D(amplitude, wavelength, octives, divisor, width);
         List<Double> result = new ArrayList<Double>();
@@ -117,13 +117,15 @@ public class PerlinNoise1D implements Sim {
 
         this.bodyItems.add(lineBody);
 
-        stageSim();
+        this.stageSim();
     }
 
     @Override
     public void stageSim() {
         for (Body body : this.bodyItems) {
-            this.pane.getChildren().add(body.getNode());
+            if (!this.pane.getChildren().contains(body.getNode())) {
+                this.pane.getChildren().add(body.getNode());
+            }
         }
     }
 
