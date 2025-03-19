@@ -87,7 +87,7 @@ public class FlockingSim implements Sim {
                 List<Body> neighbours = subGrid[row][col];
 
                 // execute and monitor mulithreaded flocks 
-                Flock flock = new Flock(body, neighbours, this.mousePos);
+                Flock flock = new Flock(body, neighbours);
                 pool.execute(flock);
                 int activeCount = pool.getActiveCount();
                 System.out.println("Currently active threads:" + activeCount);

@@ -2,13 +2,11 @@ package physicsengine.simulation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import physicsengine.Common;
 
 public class BinLatticeSubdivision {
     private List<Body>[][] subDivGrid;
-    private ThreadPoolExecutor executor;
 
     public BinLatticeSubdivision(int width, int height, int subdivisionResolution, List<Body> objects) {
         int rows = (int) (height / subdivisionResolution);

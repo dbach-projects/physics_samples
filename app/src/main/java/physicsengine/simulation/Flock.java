@@ -7,12 +7,10 @@ import physicsengine.Vector2D;
 public class Flock implements Runnable{
     private Body source;
     private List<Body> boids;
-    private Vector2D mousePos;
 
-    public Flock(Body source, List<Body> boids, Vector2D mousePos) {
+    public Flock(Body source, List<Body> boids) {
         this.source = source;
         this.boids = boids;
-        this.mousePos = mousePos;
     }
 
     @Override
