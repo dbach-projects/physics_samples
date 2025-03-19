@@ -4,13 +4,19 @@ import java.util.List;
 
 import physicsengine.Vector2D;
 
-public class Flock {
+public class Flock implements Runnable{
+    private Body source;
+    private List<Body> boids;
+    private Vector2D mousePos;
 
-    public Flock() {
-
+    public Flock(Body source, List<Body> boids, Vector2D mousePos) {
+        this.source = source;
+        this.boids = boids;
+        this.mousePos = mousePos;
     }
 
-    public void run(Body source, List<Body> boids, Vector2D mousePos) {
+    @Override
+    public void run() {
         Vector2D separation = this.separate(source, boids, 35);
         Vector2D alignment = this.align(source, boids, 50);
         Vector2D cohesion = this.cohere(source, boids, 50);

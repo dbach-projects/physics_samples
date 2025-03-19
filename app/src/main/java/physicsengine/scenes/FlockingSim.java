@@ -2,6 +2,8 @@ package physicsengine.scenes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
@@ -22,13 +24,17 @@ public class FlockingSim implements Sim {
     private Pane pane;
     private List<Body> bodyItems = new ArrayList<Body>();
     private Vector2D mousePos = new Vector2D();
-    private Flock flock = new Flock();
     private int screenWidth, screenHeight;
     private int pxPerGrid = 100;
+    private BinLatticeSubdivision bin;
+    private ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+
 
     public FlockingSim(int width, int height) {
         this.screenWidth = width;
         this.screenHeight = height;
+
+        bin = new BinLatticeSubdivision(this.screenWidth, this.screenHeight, this.pxPerGrid, this.bodyItems);
 
         this.pane = new Pane();
         this.pane.setPrefSize(width, height);
@@ -67,26 +73,30 @@ public class FlockingSim implements Sim {
         return () -> {
 
             // BinLattice to lookup neighbours and improve performance
-            BinLatticeSubdivision bin = new BinLatticeSubdivision(this.screenWidth, this.screenHeight, this.pxPerGrid, this.bodyItems);
+            bin.compileSubdivision(screenWidth, screenHeight, pxPerGrid, bodyItems);
             List<Body>[][] subGrid = bin.getSubDivGrid();
                 
             for (Body body : this.bodyItems) {
-                int row = (int)(body.getPosition().getX() / this.pxPerGrid);
-                int col = (int)(body.getPosition().getY() / this.pxPerGrid);
+                int row = (int) (body.getPosition().getX() / this.pxPerGrid);
+                int col = (int) (body.getPosition().getY() / this.pxPerGrid);
                 int rows = (int) (this.screenWidth / this.pxPerGrid);
                 int cols = (int) (this.screenHeight / this.pxPerGrid);
-                col = (int)Common.constrain(col, 0, cols - 1);
-                row = (int)Common.constrain(row, 0, rows - 1);
+                col = (int) Common.constrain(col, 0, cols - 1);
+                row = (int) Common.constrain(row, 0, rows - 1);
 
                 List<Body> neighbours = subGrid[row][col];
 
-                flock.run(body, neighbours, this.mousePos);
+                // execute and monitor mulithreaded flocks 
+                Flock flock = new Flock(body, neighbours, this.mousePos);
+                pool.execute(flock);
+                int activeCount = pool.getActiveCount();
+                System.out.println("Currently active threads:" + activeCount);
 
                 flock.wrapping(body, (float) this.pane.getWidth(), (float) this.pane.getHeight());
 
                 double brightness = flock.associationCount(body, neighbours, 50);
 
-                ((SolidBody)body).getShape().setFill(Color.hsb(290, .5, brightness));
+                ((SolidBody) body).getShape().setFill(Color.hsb(290, .5, brightness));
 
                 body.run();
             }
